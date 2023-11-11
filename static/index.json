@@ -1,0 +1,26 @@
+[
+  {
+    "path": "2022",
+    "isReadable": true,
+    "content": "Báo điểm năm 2022",
+    "dataForm": "90000",
+    "dataTo": "186000",
+    "totalCount": 92206
+  },
+  {
+    "path": "2023",
+    "isReadable": true,
+    "content": "Báo điểm năm 2023",
+    "dataForm": "90000",
+    "dataTo": "189000",
+    "totalCount": 95949
+  },
+  {
+    "path": "test",
+    "isReadable": true,
+    "content": "Thử nghiệm hệ thống",
+    "dataForm": "0",
+    "dataTo": "0",
+    "totalCount": 0
+  }
+]

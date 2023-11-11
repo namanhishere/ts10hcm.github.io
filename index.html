@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Tuyển sinh 10</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+       
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Cơ sở dữ liệu về điểm tuyển sinh vào 10 TP Hồ Chí Minh</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation"></button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Trang chủ<span class="sr-only">(current)</span></a>
+                </li>
+                <!-- <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li> -->
+            </ul>
+        </div>
+    </nav>
+
+    <div style="margin: 15px;"> </div>
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-6">
+            <div class="card text-left">
+                <div class="card-body">
+                    <h4 class="card-title">Quản lý dữ liệu</h4>
+                    <ul>
+                        <li>Hiện đang có <strong style="display: inline-block;" id="sum-data-main">[đang tải...]</strong> dữ liệu</li>
+                        <li>Tất cả dữ liệu đều được lưu kể cả khi đóng tab</li>
+                    </ul>
+                    <button id="btn-createData" class="btn btn-primary"data-toggle="modal" data-target="#addDataModal">Thêm mới dữ liệu</button>
+                    <button id="btn-editData" class="btn btn-warning"data-toggle="modal" data-target="#editDataModal">Quản lý dữ liệu</button>
+                    <!-- <button id="btn-deleteAllData" class="btn btn-danger">Xóa tất cả dữ liệu</button> -->
+                    <button id="btn-reloadAllTable" class="btn btn-success" onclick="reloadAllTable()">Tải lại biểu đồ</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card text-left">
+                <div class="card-body">
+                    <h4 class="card-title">Lưu ý</h4>
+                    <ul>
+                        <li>Đối với số thứ từ 150xx các bạn lấy khoảng đến 160xxx nha</li>
+                        <!-- <li>Các bạn ở bảng chuyên có thể xem thêm tại đây <a href="">Dữ liệu điểm chuyên</a></li> -->
+                        <li>Dữ liệu trả về bị thiếu 1 số dữ liệu. Mình đang cố gắng tìm cách khắc phục</li>
+
+                        <li>Đây chỉ là dữ liệu ra từ web xem điểm. Mình không phải là người của Sở Giáo dục Thành phố</li>
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="col-lg-1"></div>
+    </div>
+    <div style="margin: 15px;"> </div>
+
+    <div id="addDataModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+      
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title text-left">Thêm dữ liệu</h4>
+
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div style="display: inline-block;">
+                    <p style="display: inline-block;">Số báo danh bắt đầu: </p><input id="inp-start" maxlength="3" size="3">00
+                </div>
+                <div>
+                <p style="display: inline-block;">Số báo danh kết thúc: </p><input id="inp-end" maxlength="3" size="3">00
+
+                </div>
+                <p style="display: inline-block;">Mã cột báo điểm: <input id="inp-year" maxlength="4" size="4"></p>  
+
+                <p>Đặt tên cột báo điểm: <input id="inp-name-data"> </p>  
+
+                <button type="button" class="btn btn-success" id="btn-addData">Thêm mới dữ liệu</button>
+
+
+              </form>
+            </div>
+            <div class="modal-footer">
+                <small></small>                  
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+          </div>
+      
+        </div>
+
+        <div class="modal-dialog">
+      
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Danh sách các cột báo điểm</h4>
+              </div>
+              <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Nội dung</th>
+                            <th>Khoảng dữ liệu</th>
+                            <th>Số dữ liệu</th>
+                          </tr>
+                    </thead>
+                    <tbody id="list-CotDuLieuServer">
+                    </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                  <small id="list-CotDuLieuServerCount"></small>                       
+              </div>
+            </div>
+        
+          </div>
+      </div>
+    
+      <div id="editDataModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+      
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title text-left">Quản lý dữ liệu</h4>
+
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tên cột</th>
+                            <th>Khoảng dữ liệu</th>
+                            <th>Hành động</th>
+                          </tr>
+                    </thead>
+                    <tbody id="list-CotDuLieuLocal">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <small id="list-CotDuLieuLocalCount"></small>                  
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+          </div>
+      
+        </div>
+      </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ tổng điểm</h4>
+
+                <canvas id="sumChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ tổng điểm tính theo phần trăm tỉ lệ</h4>
+
+                <canvas id="sumPercentChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ điểm văn</h4>
+
+                <canvas id="vChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ tổng điểm tính theo phần trăm tỉ lệ</h4>
+
+                <canvas id="vPercentChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ điểm toán</h4>
+
+                <canvas id="tChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ điểm toán tính theo phần trăm tỉ lệ</h4>
+
+                <canvas id="tPercentChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ điểm anh</h4>
+
+                <canvas id="aChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card text-left">
+              <div class="card-body">
+                <h4 class="card-title">Biểu đồ điểm anh tính theo phần trăm tỉ lệ</h4>
+
+                <canvas id="aPercentChart" style="width: 100%;"></canvas>
+
+              </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    <small>Created by namanhishere. Contact me: namanh@namanhishere.com</small>
+
+</body>
+<script>
+    if(!Storage) alert("Trình duyệt của bạn không hỗ trợ để sử dụng")
+    if(!localStorage.getItem("data")) localStorage.setItem("data","[]")
+    var tableControler = {}
+
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("loaded")
+        tableControler.sumTotalTable = new Chart(document.getElementById("sumChart"),{
+                    type:"bar",
+                    data:{
+                        labels: Array.from({length:120},(_,i)=>i/4),
+                        datasets:[],
+                    },
+                    options:{responsive:true}
+            })
+        tableControler.sumPercentTable = new Chart(document.getElementById("sumPercentChart"),{
+                type:"bar",
+                data:{labels: Array.from({
+                    length:120},(_,i)=>i/4),
+                    datasets:[],
+
+                },
+                options:{responsive:true}
+            }),
+        tableControler.vTotalTable = new Chart(document.getElementById("vChart"),{
+                    type:"bar",
+                    data:{
+                        labels: Array.from({length:40},(_,i)=>i/4),
+                        datasets:[], 
+                    },
+                    options:{responsive:true}
+            }),
+        tableControler.vPercentTable = new Chart(document.getElementById("vPercentChart"),{
+                type:"bar",
+                data:{labels: Array.from({
+                    length:40},(_,i)=>i/4),
+                    datasets:[],
+                },
+                options:{responsive:true}
+            }),
+        tableControler.tTotalTable = new Chart(document.getElementById("tChart"),{
+                    type:"bar",
+                    data:{
+                        labels: Array.from({length:40},(_,i)=>i/4),
+                        datasets:[],
+                    },
+                    options:{responsive:true}
+            }),
+        tableControler.tPercentTable = new Chart(document.getElementById("tPercentChart"),{
+                type:"bar",
+                data:{
+                    labels: Array.from({length:40},(_,i)=>i/4),
+                    datasets:[],
+                },
+                options:{responsive:true}
+            }),
+        tableControler.aTotalTable = new Chart(document.getElementById("aChart"),{
+                    type:"bar",
+                    data:{labels: Array.from({length:40},(_,i)=>i/4)},
+                    options:{responsive:true}
+            }),
+        tableControler.aPercentTable = new Chart(document.getElementById("aPercentChart"),{
+                type:"bar",
+                data:{labels: Array.from({length:40},(_,i)=>i/4)},
+                options:{responsive:true}
+            })
+
+        console.log(tableControler)
+    });
+    
+    document.getElementById("sum-data-main").innerHTML=JSON.parse(localStorage.getItem("data")).length
+    let infoData
+    // localStorage.setItem("key", "value");
+    (async ()=>{
+        infoData = (await superagent.get("/static/index.json")).body
+        let listDataaText=""
+        infoData.forEach(e => {
+            listDataaText = listDataaText+"<tr>\n"+
+                            "<td>"+e.path+"</td>\n"+
+                            "<td>"+e.content+"</td>\n"+
+                            "<td>"+e.dataForm+"-"+e.dataTo+"</td>\n"+
+                            "<td>"+e.totalCount+"</td>\n"+
+                          "</tr>\n"
+        })
+        document.getElementById("list-CotDuLieuServer").innerHTML=listDataaText
+        document.getElementById("list-CotDuLieuServerCount").innerHTML="Danh sách này có "+infoData.length+ " cột điểm"
+
+
+    })()
+
+    document.getElementById("btn-createData").addEventListener("click",function (event) {
+        event.preventDefault()
+        document.getElementById("inp-start").value = ""
+        document.getElementById("inp-end").value = ""
+        document.getElementById("inp-year").value = 2023
+    })
+
+    
+
+    function reloadDataList(){
+        let data = JSON.parse(localStorage.getItem("data"))
+        let outStr = ""
+        data.forEach(e=>{
+            outStr = outStr+"<tr>\n"+
+                            "<td>"+e.name+"</td>\n"+
+                            "<td>"+e.year+"("+e.from+"000-"+e.to+"000)"+"</td>\n"+
+                            "<td>"+"<button class='btn btn-danger' onclick='deleteData("+e.id+")'>Xóa</button></td>\n"+
+                          "</tr>\n"
+        })
+        document.getElementById("list-CotDuLieuLocal").innerHTML=outStr
+        document.getElementById("list-CotDuLieuLocalCount").innerHTML="Danh sách này có "+data.length+" dữ liệu"
+
+
+    }
+    function deleteData(id){
+        let data = JSON.parse(localStorage.getItem("data"))
+        localStorage.setItem("data",JSON.stringify(data.filter(s => s.id != id)))
+        reloadDataList()
+
+    }
+    document.getElementById("btn-editData").addEventListener("click",function (event) {
+        event.preventDefault()
+        reloadDataList()
+
+    })
+    document.getElementById("btn-addData").addEventListener("click",async function(e) {
+        e.preventDefault()
+        let start_num = parseInt(document.getElementById("inp-start").value)
+        let end_num = parseInt(document.getElementById("inp-end").value)
+        let year_target = document.getElementById("inp-year").value
+        let name_target = document.getElementById("inp-name-data").value
+
+        let infoYearIndex = infoData.filter((ele)=> ele.path ==year_target).length
+        if(infoYearIndex.length == 0) return alert("Không tìm thấy mã báo điểm phù hợp")
+        if(!start_num || !end_num) return alert("Vui lòng nhập khoảng bắt đầu và khoảng kết thúc")
+        if(!name_target) return alert("Vui lòng nhập tên cột dữ liệu")
+
+        if(start_num > infoYearIndex.dataForm || end_num < infoYearIndex.dataTo || end_num<start_num) return alert("Bạn đã nhập khoảng không có trong danh sách")
+        let server_Data = await getData(start_num,end_num,year_target)
+        console.log(server_Data)
+        let oldData = JSON.parse(localStorage.getItem("data"))
+        oldData.push({name:name_target,data:server_Data,year:year_target,from:start_num,to:end_num,id:Date.now()})
+        localStorage.setItem("data",JSON.stringify(oldData))
+        document.getElementById("sum-data-main").innerHTML=oldData.length
+    })
+
+        
+
+        async function getData(from, to, year) {
+            if (to - from <= 0) return
+            console.log(from)
+            let data_out = {
+                v: Array.from({ length: 40 }, () => 0),
+                t: Array.from({ length: 40 }, () => 0),
+                a: Array.from({ length: 40 }, () => 0),
+                c: Array.from({ length: 40 }, () => 0),
+                tt: Array.from({ length: 120 }, () => 0),
+                tc: Array.from({ length: 200 }, () => 0),
+                l: 0,
+            }
+            for(let index = from; index < to - 1; index++) {
+                let dataout = (await superagent.get("/static/" + year + "/" + index + "00-" + (index + 1) + "00.json")).body
+                for (let index = 0; index < 40; index++) {
+                    data_out.v[index] = data_out.v[index]+dataout.v[index]
+                    data_out.a[index] = data_out.a[index]+dataout.a[index]
+                    data_out.t[index] = data_out.t[index]+dataout.t[index]   
+                }
+                for (let index = 0; index < 120; index++) {
+                    data_out.tt[index] = data_out.tt[index]+dataout.tt[index]
+                }
+                for (let index = 0; index < 200; index++) {
+                    data_out.tc[index] = data_out.tc[index]+dataout.tc[index]
+                }
+                data_out.l = data_out.l + dataout.l
+            }
+            return data_out
+        }
+
+
+        function exportPercent(data,l) {
+            return Array.from({length:data.length},(_,k)=> (data[k]/l)*100)
+        }
+
+
+        function reloadTable(table,data){
+            table.data.datasets = data
+            table.update()
+        }
+
+        function reloadAllTable(){
+            // reloadAllTable(tableControler.sumTotalTable,JSON.parse(localStorage.getItem(data)))
+            // console.log(JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:(v.data.tt/v.data.l)*100}))
+            // console.log(JSON.parse(localStorage.getItem("data")).map(v=>{console.log(v.data.tt)label:v.name,data:(v.data.tt/v.data.l)*100}}))
+            JSON.parse(localStorage.getItem("data")).forEach(e=>{
+              console.log(e.data.tt/e.data.l)
+            })
+            reloadTable(tableControler.sumTotalTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.tt}}))
+            reloadTable(tableControler.vTotalTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.v}}))
+            reloadTable(tableControler.tTotalTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.t}}))
+            reloadTable(tableControler.aTotalTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.a}}))
+
+            reloadTable(tableControler.sumPercentTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.tt.map(f=>(f/v.data.l)*100)}}))
+            reloadTable(tableControler.tPercentTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.t.map(f=>(f/v.data.l)*100)}}))
+            reloadTable(tableControler.vPercentTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.v.map(f=>(f/v.data.l)*100)}}))
+            reloadTable(tableControler.aPercentTable,JSON.parse(localStorage.getItem("data")).map(v=>{return{label:v.name,data:v.data.a.map(f=>(f/v.data.l)*100)}}))
+
+            
+            
+
+
+
+        }
+        // reloadAllTable()
+        // function loadSumMarkTable() {
+        //     let data = JSON.parse(localStorage.getItem("data"))
+
+        //     let chartData =[]
+        //     data.forEach(list=> {
+        //         let countLabel = Array.from({length:121},()=>0)
+        //         // console.log(list.data.map(subdiem => subdiem.TONG_THUONG))
+        //         list.data.map(subdiem => subdiem.TONG_THUONG).forEach(subDiem =>{
+        //             // console.log(subDiem*4)
+        //             countLabel[subDiem*4]++
+        //         })
+        //         chartData.push( {
+        //             label:list.name,
+        //             data:countLabel
+        //         })
+        //     })
+        //     console.log(chartData)
+        //     new Chart(document.getElementById("sumchart"),{
+        //         type:"bar",
+        //         data:{
+        //             labels: Array.from({length:120},(_,i)=>i/4),
+        //             datasets:chartData,
+        //         },
+        //         options:{responsive:true}
+        //     })
+            
+        // }
+
+        // function loadSumMarkPercentTable() {
+        //     let data = JSON.parse(localStorage.getItem("data"))
+
+        //     let chartData =[]
+        //     data.forEach(list=> {
+        //         let countLabel = Array.from({length:121},()=>0)
+        //         // console.log(list.data.map(subdiem => subdiem.TONG_THUONG))
+        //         let listTongDiem = list.data.map(subdiem => subdiem.TONG_THUONG)
+        //         listTongDiem.forEach(subDiem =>{
+        //             // console.log(subDiem*4)
+        //             countLabel[subDiem*4] = countLabel[subDiem*4] + (1/listTongDiem.length)*100
+        //         })
+        //         chartData.push( {
+        //             label:list.name,
+        //             data:countLabel
+        //         })
+        //     })
+        //     console.log(chartData)
+        //     new Chart(document.getElementById("sumPercentChart"),{
+        //         type:"bar",
+        //         data:{
+        //             labels: Array.from({length:120},(_,i)=>i/4),
+        //             datasets:chartData,
+        //         },
+        //         options:{responsive:true}
+        //     })
+            
+        // }
+
+
+        // function clearData() {
+        //     data = []
+        // }
+</script>
+
+<style>
+
+</style>
+</html>
