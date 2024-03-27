@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
        
 </head>
 
@@ -323,6 +325,8 @@
             })
 
         console.log(tableControler)
+
+        reloadAllTable()
     });
     
     document.getElementById("sum-data-main").innerHTML=JSON.parse(localStorage.getItem("data")).length
@@ -372,6 +376,7 @@
     function deleteData(id){
         let data = JSON.parse(localStorage.getItem("data"))
         localStorage.setItem("data",JSON.stringify(data.filter(s => s.id != id)))
+        reloadAllTable()
         reloadDataList()
 
     }
@@ -392,6 +397,8 @@
         if(!start_num || !end_num) return alert("Vui lòng nhập khoảng bắt đầu và khoảng kết thúc")
         if(!name_target) return alert("Vui lòng nhập tên cột dữ liệu")
 
+        swal("Đang tải dữ liệu......")
+
         if(start_num > infoYearIndex.dataForm || end_num < infoYearIndex.dataTo || end_num<start_num) return alert("Bạn đã nhập khoảng không có trong danh sách")
         let server_Data = await getData(start_num,end_num,year_target)
         console.log(server_Data)
@@ -399,6 +406,10 @@
         oldData.push({name:name_target,data:server_Data,year:year_target,from:start_num,to:end_num,id:Date.now()})
         localStorage.setItem("data",JSON.stringify(oldData))
         document.getElementById("sum-data-main").innerHTML=oldData.length
+        reloadAllTable()
+        swal("Thành công","Đã nạp thành công dữ liệu","success")
+
+        
     })
 
         
