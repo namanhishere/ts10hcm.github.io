@@ -16,6 +16,14 @@
     "totalCount": 95949
   },
   {
+    "path": "2024",
+    "isReadable": true,
+    "content": "Báo điểm năm 2024",
+    "dataForm": "90000",
+    "dataTo": "192000",
+    "totalCount": 98293
+  },
+  {
     "path": "test",
     "isReadable": true,
     "content": "Thử nghiệm hệ thống",
